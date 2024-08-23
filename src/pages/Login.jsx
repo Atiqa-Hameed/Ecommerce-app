@@ -1,148 +1,174 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import * as Yup from 'yup';
 
-function Auth() {
-    const [isLogin, setIsLogin] = useState(true); // Toggle between login and signup forms
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
-    const [errorMessage, setErrorMessage] = useState('');
-    const [successMessage, setSuccessMessage] = useState('');
+const AuthForm = () => {
+  const [isLogin, setIsLogin] = useState(true);
+  const [message, setMessage] = useState('');
 
-    const handleLogin = async (e) => {
-        e.preventDefault();
+  const initialValues = {
+    email: '',
+    password: '',
+    ...(isLogin ? {} : { confirmPassword: '', name: '' }), 
+  };
 
-        if (!email || !password) {
-            setErrorMessage('Please fill in all fields.');
-            return;
-        }
+  const validationSchema = Yup.object({
+    email: Yup.string()
+      .email('Invalid email format')
+      .required('Email is required'),
+    password: Yup.string()
+      .min(6, 'Password must be at least 6 characters')
+      .required('Password is required'),
+    ...(isLogin
+      ? {}
+      : {
+          confirmPassword: Yup.string()
+            .oneOf([Yup.ref('password'), null], 'Passwords must match')
+            .required('Confirm Password is required'),
+          name: Yup.string()
+            .min(2, 'Name must be at least 2 characters')
+            .required('Name is required'),
+        }),
+  });
 
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
-            setErrorMessage('Please enter a valid email address.');
-            return;
-        }
+  const onSubmit = (values) => {
+    if (isLogin) {
+      // Handle login submission
+      setMessage(`Welcome back, ${values.email}! You have successfully logged in.`);
+    } else {
+      // Handle signup submission
+      setMessage(`Thank you for signing up, ${values.name}! Please log in.`);
+    }
+    console.log('Form Data', values);
+  };
 
-        if (password.length < 6) {
-            setErrorMessage('Password must be at least 6 characters long.');
-            return;
-        }
+  const toggleFormMode = () => {
+    setIsLogin((prevMode) => !prevMode);
+    setMessage(''); // Clear message when switching forms
+  };
 
-        setErrorMessage('');
-        
-        try {
-            // Replace with actual login API call
-            // await api.login(email, password);
-            setSuccessMessage('Login successful!');
-            setTimeout(() => setSuccessMessage(''), 3000); // Clear success message after 3 seconds
-        } catch (error) {
-            setErrorMessage('Login failed. Please try again.');
-        }
-    };
-
-    const handleSignup = async (e) => {
-        e.preventDefault();
-
-        if (!email || !password || !confirmPassword) {
-            setErrorMessage('Please fill in all fields.');
-            return;
-        }
-
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
-            setErrorMessage('Please enter a valid email address.');
-            return;
-        }
-
-        if (password.length < 6) {
-            setErrorMessage('Password must be at least 6 characters long.');
-            return;
-        }
-
-        if (password !== confirmPassword) {
-            setErrorMessage('Passwords do not match.');
-            return;
-        }
-
-        setErrorMessage('');
-        
-        try {
-            // Replace with actual signup API call
-            // await api.signup(email, password);
-            setSuccessMessage('Signup successful!');
-            setTimeout(() => setSuccessMessage(''), 3000); // Clear success message after 3 seconds
-        } catch (error) {
-            setErrorMessage('Signup failed. Please try again.');
-        }
-    };
-
-    return (
-        <div className="flex justify-center items-center h-screen bg-gray-100">
-        
-            <div className="bg-white p-8 rounded-lg shadow-md w-80">
-                <h1 className="text-2xl font-semibold mb-6 text-center">
-                    {isLogin ? 'Login' : 'Signup'}
-                </h1>
-                <form onSubmit={isLogin ? handleLogin : handleSignup}>
-                    <label htmlFor="email" className="block text-sm font-medium mb-2">Email:</label>
-                    <input
-                        type="email"
-                        id="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        className="w-full p-2 border border-gray-300 rounded-md mb-4"
-                        required
-                    />
-                    <label htmlFor="password" className="block text-sm font-medium mb-2">Password:</label>
-                    <input
-                        type="password"
-                        id="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        className="w-full p-2 border border-gray-300 rounded-md mb-4"
-                        required
-                    />
-                    {!isLogin && (
-                        <>
-                            <label htmlFor="confirmPassword" className="block text-sm font-medium mb-2">Confirm Password:</label>
-                            <input
-                                type="password"
-                                id="confirmPassword"
-                                value={confirmPassword}
-                                onChange={(e) => setConfirmPassword(e.target.value)}
-                                className="w-full p-2 border border-gray-300 rounded-md mb-4"
-                                required
-                            />
-                        </>
-                    )}
-                    <button
-                        type="submit"
-                        className="w-full py-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600"
-                    >
-                        {isLogin ? 'Login' : 'Signup'}
-                    </button>
-                    {errorMessage && (
-                        <p className="text-red-500 text-center mt-4">{errorMessage}</p>
-                    )}
-                    {successMessage && (
-                        <p className="text-green-500 text-center mt-4">{successMessage}</p>
-                    )}
-                </form>
-                <div className="text-center mt-4">
-                    <p className="text-sm text-gray-600">
-                        {isLogin ? "Don't have an account?" : "Already have an account?"}
-                        <button
-                            onClick={() => setIsLogin(!isLogin)}
-                            className="text-blue-500 ml-1"
-                        >
-                            {isLogin ? 'Sign Up' : 'Log In'}
-                        </button>
-                    </p>
-                </div>
-            </div>
+  return (
+    <div className="max-w-md mx-auto mt-10 p-6 border border-gray-200 rounded-md shadow-md">
+      <h2 className="text-2xl font-bold mb-6 text-center">{isLogin ? 'Login' : 'Sign Up'}</h2>
+      
+      {message && (
+        <div className="mb-4 p-3 text-center bg-green-100 text-green-700 rounded">
+          {message}
         </div>
-    );
-}
+      )}
+      
+      <Formik
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        onSubmit={onSubmit}
+        enableReinitialize={true}
+      >
+        <Form>
+          {!isLogin && (
+            <div className="mb-4">
+              <label htmlFor="name" className="block text-gray-700">
+                Name:
+              </label>
+              <Field
+                type="text"
+                id="name"
+                name="name"
+                className="w-full px-3 py-2 border rounded-md"
+              />
+              <ErrorMessage name="name" component="div" className="text-red-500 text-sm mt-1" />
+            </div>
+          )}
 
-export default Auth;
+          <div className="mb-4">
+            <label htmlFor="email" className="block text-gray-700">
+              Email:
+            </label>
+            <Field
+              type="email"
+              id="email"
+              name="email"
+              className="w-full px-3 py-2 border rounded-md"
+            />
+            <ErrorMessage name="email" component="div" className="text-red-500 text-sm mt-1" />
+          </div>
+
+          <div className="mb-4">
+            <label htmlFor="password" className="block text-gray-700">
+              Password:
+            </label>
+            <Field
+              type="password"
+              id="password"
+              name="password"
+              className="w-full px-3 py-2 border rounded-md"
+            />
+            <ErrorMessage
+              name="password"
+              component="div"
+              className="text-red-500 text-sm mt-1"
+            />
+          </div>
+
+          {!isLogin && (
+            <div className="mb-4">
+              <label htmlFor="confirmPassword" className="block text-gray-700">
+                Confirm Password:
+              </label>
+              <Field
+                type="password"
+                id="confirmPassword"
+                name="confirmPassword"
+                className="w-full px-3 py-2 border rounded-md"
+              />
+              <ErrorMessage
+                name="confirmPassword"
+                component="div"
+                className="text-red-500 text-sm mt-1"
+              />
+            </div>
+          )}
+
+          <div className="flex items-center justify-between">
+            <button
+              type="submit"
+              className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+            >
+              {isLogin ? 'Login' : 'Sign Up'}
+            </button>
+          </div>
+        </Form>
+      </Formik>
+
+      <div className="mt-4 text-center">
+        {isLogin ? (
+          <p>
+            Don't have an account?{' '}
+            <button
+              type="button"
+              onClick={toggleFormMode}
+              className="text-blue-500 hover:underline"
+            >
+              Sign Up
+            </button>
+          </p>
+        ) : (
+          <p>
+            Already have an account?{' '}
+            <button
+              type="button"
+              onClick={toggleFormMode}
+              className="text-blue-500 hover:underline"
+            >
+              Login
+            </button>
+          </p>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default AuthForm;
+
 
 

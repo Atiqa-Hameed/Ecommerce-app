@@ -6,26 +6,33 @@ const SearchBar = ({ showSearch, setShowSearch }) => {
   const [search, setSearch] = useState("");
 
   return showSearch ? (
-    <div className="border-t border-b bg-gray-50 text-center">
-      <div className="inline-flex items-center justify-center border-gray-400 px-5 py-2 my-5 mx-3 rounded-full w-3/4 sm:w-1/2">
+    <div className="relative bg-gray-50 py-4 px-3 flex items-center justify-center">
+      <div className="relative flex items-center border border-gray-300 rounded-full w-3/4 sm:w-1/2">
         <input
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="pl-10 pr-4 py-2 w-full rounded-full focus:outline-none"
-
+          className="pl-10 pr-12 py-2 w-full rounded-full border-none focus:outline-none"
           type="text"
           placeholder="Search"
         />
-        <CiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-600" />
-
+        <CiSearch className="absolute left-3 text-gray-600 w-5 h-5" />
+        {search && (
+          <LuX
+            onClick={() => setSearch("")}
+            className="absolute right-12 text-gray-600 w-5 h-5 cursor-pointer"
+          />
+        )}
       </div>
-      <LuX
+      <button
         onClick={() => setShowSearch(false)}
-        className="inline w-6 cursor-pointer"
-      />
+        className="absolute right-12 top-1/2 transform -translate-y-1/2 text-gray-600 w-6 h-6 cursor-pointer"
+      >
+        <LuX className="w-full h-full" />
+      </button>
     </div>
   ) : null;
 };
 
 export default SearchBar;
+
 

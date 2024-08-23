@@ -12,7 +12,7 @@ const AboutUs = () => {
           {/* Image */}
           <div className="md:w-1/2 mb-6 md:mb-0">
             <img
-              src={assets.about} // Replace with your image path
+              src={assets.about} 
               alt="About Trendify"
               className="w-full h-auto rounded-lg shadow-md"
             />

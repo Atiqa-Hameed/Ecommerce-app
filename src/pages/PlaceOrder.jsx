@@ -64,7 +64,6 @@ const PlaceOrder = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log('Order placed:', deliveryInfo, paymentMethod, cartItems, totalPrice);
-    // Clear local storage after order placement
     localStorage.removeItem('deliveryInfo');
     localStorage.removeItem('paymentMethod');
     localStorage.removeItem('cartItems');
@@ -77,7 +76,6 @@ const PlaceOrder = () => {
         <h1 className="text-3xl font-bold text-gray-900">Place Your Order</h1>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {/* Delivery Information Form */}
         <form className="bg-white shadow-md rounded-lg p-6" onSubmit={handleSubmit}>
           <h2 className="text-2xl font-semibold text-gray-900 mb-4">Delivery Information</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

@@ -44,7 +44,6 @@ const UserDropdown = () => {
             className="block w-full px-4 py-2 text-gray-700 hover:bg-gray-100 text-left"
             role="menuitem"
             onClick={() => {
-              // Handle logout logic here
               setDropdownVisible(false);
             }}
           >
