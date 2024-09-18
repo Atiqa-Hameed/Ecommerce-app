@@ -17,7 +17,7 @@ const OurPolicy = () => {
      </div>
      <div>
      <BiSupport className="w-12 h-12 m-auto mb-5" />
-     <p className="font-semibold">Beest Customer Suppot</p>
+     <p className="font-semibold">Best Customer Suppot</p>
      <p className="text-gray-400">We provide 24/7 customer support</p>
     </div>
 

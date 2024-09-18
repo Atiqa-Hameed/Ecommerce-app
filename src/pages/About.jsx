@@ -1,7 +1,9 @@
 import { assets } from "../assets/assets";
+import NewletterBox from "../components/NewletterBox";
+import OurPolicy from "../components/OurPolicy";
 const AboutUs = () => {
   return (
-    <div className="bg-gray-100 min-h-screen flex items-center justify-center">
+    <div className="h-full flex items-center justify-center">
       <div className="container mx-auto p-8">
         <header className="text-center mb-8">
           <h1 className="text-4xl font-bold text-gray-900">About Trendify</h1>
@@ -28,8 +30,11 @@ const AboutUs = () => {
             </p>
           </div>
         </section>
+        <OurPolicy />
+        <NewletterBox />
       </div>
     </div>
+
   );
 };
 
